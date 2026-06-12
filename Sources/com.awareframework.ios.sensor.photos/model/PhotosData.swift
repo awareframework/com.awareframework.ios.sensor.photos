@@ -3,7 +3,7 @@ import GRDB
 import com_awareframework_ios_core
 
 public struct PhotosData: BaseDbModelSQLite {
-    public static let databaseTableName = "photosData"
+    public static let databaseTableName = "ios_photos"
     public static let TABLE_NAME = databaseTableName
 
     public var id: Int64?
