@@ -106,13 +106,16 @@ public class PhotosSensor: AwareSensor {
             guard let self else { return }
             switch status {
             case .authorized, .limited:
-                let options = PHFetchOptions()
-                options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-                self.fetchResultQueue.sync {
-                    self.fetchResult = PHAsset.fetchAssets(with: options)
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    let options = PHFetchOptions()
+                    options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+                    self.fetchResultQueue.sync {
+                        self.fetchResult = PHAsset.fetchAssets(with: options)
+                    }
+                    PHPhotoLibrary.shared().register(self)
+                    self.notificationCenter.post(name: .actionAwarePhotosStart, object: self)
                 }
-                PHPhotoLibrary.shared().register(self)
-                self.notificationCenter.post(name: .actionAwarePhotosStart, object: self)
             default:
                 if self.CONFIG.debug {
                     print(PhotosSensor.TAG, "Photo library access denied or restricted.")
