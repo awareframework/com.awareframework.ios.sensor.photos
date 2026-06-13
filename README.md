@@ -5,7 +5,7 @@
 This sensor module monitors the photo library using the Photos framework and detects newly added photos or videos in real time. When a new image is captured, it optionally runs Apple's Vision framework to classify the image content and store recognition labels with confidence scores.
 
 ## Requirements
-iOS 15 or later
+iOS 14 or later
 
 ## Installation
 
