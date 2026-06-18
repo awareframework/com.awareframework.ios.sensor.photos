@@ -35,17 +35,6 @@ class Tests: XCTestCase {
         wait(for: [expectSync], timeout: 5)
         NotificationCenter.default.removeObserver(syncObserver)
 
-        // start (requires photo permission — skipped on simulator without permission)
-        let expectStart = expectation(description: "start")
-        expectStart.isInverted = false
-        let startObserver = NotificationCenter.default.addObserver(
-            forName: .actionAwarePhotosStart, object: nil, queue: .main
-        ) { _ in expectStart.fulfill() }
-        sensor.start()
-        // If photo permission is not granted this expectation will time out — acceptable in CI.
-        wait(for: [expectStart], timeout: 5)
-        NotificationCenter.default.removeObserver(startObserver)
-
         // stop
         let expectStop = expectation(description: "stop")
         let stopObserver = NotificationCenter.default.addObserver(
@@ -54,6 +43,26 @@ class Tests: XCTestCase {
         sensor.stop()
         wait(for: [expectStop], timeout: 5)
         NotificationCenter.default.removeObserver(stopObserver)
+    }
+
+    func testStartControllerWhenPhotoLibraryAuthorized() throws {
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        guard status == .authorized || status == .limited else {
+            throw XCTSkip("Photo Library permission is not available in this test environment.")
+        }
+
+        let sensor = PhotosSensor()
+        sensor.CONFIG.debug = true
+
+        let expectStart = expectation(description: "start")
+        let startObserver = NotificationCenter.default.addObserver(
+            forName: .actionAwarePhotosStart, object: sensor, queue: .main
+        ) { _ in expectStart.fulfill() }
+
+        sensor.start()
+        wait(for: [expectStart], timeout: 5)
+        NotificationCenter.default.removeObserver(startObserver)
+        sensor.stop()
     }
 
     func testPhotosData() {
