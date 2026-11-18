@@ -266,21 +266,7 @@ public class PhotosSensor: AwareSensor {
     }
 
     private func makeSyncConfig(from base: DbSyncConfig, completionHandler: DbSyncCompletionHandler?) -> DbSyncConfig {
-        let config = DbSyncConfig()
-        config.removeAfterSync = base.removeAfterSync
-        config.batchSize = base.batchSize
-        config.markAsSynced = base.markAsSynced
-        config.skipSyncedData = base.skipSyncedData
-        config.keepLastData = base.keepLastData
-        config.deviceId = base.deviceId
-        config.debug = base.debug
-        config.debugLevel = base.debugLevel
-        config.progressHandler = base.progressHandler
-        config.dispatchQueue = base.dispatchQueue
-        config.backgroundSession = base.backgroundSession
-        config.compactDataFormat = base.compactDataFormat
-        config.serverType = base.serverType
-        config.test = base.test
+        let config = base.copy()
         config.completionHandler = completionHandler
         return config
     }
