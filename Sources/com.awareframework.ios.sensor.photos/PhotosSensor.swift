@@ -208,7 +208,7 @@ public class PhotosSensor: AwareSensor {
             return
         }
 
-        guard let observations = request.results as? [VNClassificationObservation] else { return }
+        guard let observations = request.results else { return }
 
         let now = Int64(Date().timeIntervalSince1970 * 1000)
         let minConfidence = CONFIG.recognitionMinConfidence
